@@ -53,8 +53,6 @@ namespace AutoAudio.Impl
                 " WHERE TargetInstance ISA 'Win32_Process' " +
                 "   AND TargetInstance.Name = '" + processName + "'";
 
-            // The dot in the scope means use the current machine
-            
 
             // Create a watcher and listen for events
             var watcher = new ManagementEventWatcher(Scope, queryString);

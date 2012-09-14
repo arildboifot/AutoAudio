@@ -122,7 +122,7 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Process";
+            this.columnHeader1.Text = "ProcessInfo";
             this.columnHeader1.Width = 190;
             // 
             // columnHeader2

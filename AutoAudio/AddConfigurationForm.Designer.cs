@@ -43,7 +43,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Process";
+            this.label2.Text = "ProcessInfo";
             // 
             // cbProcesses
             // 

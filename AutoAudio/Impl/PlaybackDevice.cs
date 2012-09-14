@@ -5,12 +5,7 @@ namespace AutoAudio.Impl
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public PlaybackDevice()
-        {
-            
-        }
-
-        public PlaybackDevice(int id, string name) : this()
+        public PlaybackDevice(int id, string name) 
         {
             Id = id;
             Name = name;

@@ -1,13 +1,13 @@
 namespace AutoAudio.Impl
 {
-    public class WatchProcess
+    public class ProcessInfo
     {
         public string Path { get; set; }
         public string CommandLine { get; set; }
 
-        public WatchProcess() { }
+        public ProcessInfo() { }
 
-        public WatchProcess(string path, string commandLine) : this()
+        public ProcessInfo(string path, string commandLine) : this()
         {
             Path = path;
             CommandLine = commandLine;

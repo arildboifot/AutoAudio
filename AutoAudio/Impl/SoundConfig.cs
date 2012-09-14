@@ -14,7 +14,7 @@ namespace AutoAudio.Impl
         /// <param name="id"></param>
         public static bool SetDefaultDevice(int id)
         {
-            var process = Process.Start(new ProcessStartInfo("lib/SoundSwitch.AudioInterface.exe", id.ToString())
+            var process = System.Diagnostics.Process.Start(new ProcessStartInfo("lib/SoundSwitch.AudioInterface.exe", id.ToString())
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -59,7 +59,7 @@ namespace AutoAudio.Impl
         /// <returns></returns>
         public static IEnumerable<OutputItem> ListDevices()
         {
-            var process = Process.Start(new ProcessStartInfo("lib/SoundSwitch.AudioInterface.exe")
+            var process = System.Diagnostics.Process.Start(new ProcessStartInfo("lib/SoundSwitch.AudioInterface.exe")
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,

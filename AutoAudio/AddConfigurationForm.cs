@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using AutoAudio.Factories;
 using AutoAudio.Impl;
 using AutoAudio.Interfaces;
 
@@ -9,14 +8,12 @@ namespace AutoAudio
     public partial class AddConfigurationForm : Form
     {
         private readonly IPlaybackDeviceProvider _playbackDeviceProvider;
-        private readonly ProcessProvider _processesProvider;
 
         public AddConfigurationForm()
         {
             InitializeComponent();
 
-            _playbackDeviceProvider = PlaybackDevicesFactory.Create();
-            _processesProvider = new ProcessProvider();
+            _playbackDeviceProvider = new PlaybackDeviceProvider();
 
             Initialize();
         }
@@ -29,7 +26,7 @@ namespace AutoAudio
                 cbPlaybackDevices.Items.Add(device);
             }
 
-            var processes = _processesProvider.GetProcesses();
+            var processes = ProcessHelper.GetProcesses();
             foreach(var process in processes)
             {
                 cbProcesses.Items.Add(process.Name);

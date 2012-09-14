@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using AutoAudio.Configuration;
-using AutoAudio.Factories;
+using AutoAudio.Impl;
 using AutoAudio.Interfaces;
 
 namespace AutoAudio
@@ -19,7 +19,7 @@ namespace AutoAudio
         {
             InitializeComponent();
 
-            _playbackDeviceProvider = PlaybackDevicesFactory.Create();
+            _playbackDeviceProvider = new PlaybackDeviceProvider();
             _defaultPlaybackDevice = _playbackDeviceProvider.GetDefaultDeviceId();
 
             Initialize();
@@ -90,7 +90,7 @@ namespace AutoAudio
 
         private void AddListener(AutoSwitchConfiguration configuration)
         {
-            var listener = ProcessEventsFactory.Create();
+            var listener = new ProcessEvents(_playbackDeviceProvider);
             listener.RegisterSwitchForProcess(configuration.Process, configuration.PlaybackDeviceId, _defaultPlaybackDevice);
 
             _processEvents.Add(configuration.Id, listener);
