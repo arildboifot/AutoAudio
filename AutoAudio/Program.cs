@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace AutoAudio
@@ -11,9 +12,16 @@ namespace AutoAudio
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ConfigurationsForm());
+            bool createdNew;
+            using (var mutex = new Mutex(true, "AutoAudio", out createdNew))
+            {
+                if (createdNew)
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new ConfigurationsForm());
+                }
+            }
         }
     }
 }
