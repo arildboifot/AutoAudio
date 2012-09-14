@@ -15,7 +15,7 @@
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>ftp://ftp.boifotsoftware.no/boifotsoftware.no/apps/AutoAudioSwitcher/</PublishUrl>
+    <PublishUrl>ftp://ftp.boifotsoftware.no/boifotsoftware.no/apps/AutoAudio/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,10 +25,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.boifotsoftware.no/apps/AutoAudioSwitcher/</InstallUrl>
+    <InstallUrl>http://www.boifotsoftware.no/apps/AutoAudio/</InstallUrl>
     <ProductName>Auto audio switcher</ProductName>
     <PublisherName>Cotton Cactus</PublisherName>
     <SuiteName>cottoncactus.no</SuiteName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
