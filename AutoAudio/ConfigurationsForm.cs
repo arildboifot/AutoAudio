@@ -29,6 +29,7 @@ namespace AutoAudio
         {
             _isInitializing = true;
             cbEnableAutoSwitch.Checked = ConfigurationProvider.CurrentInstance.Configuration.Enabled;
+            tsmiEnable.Checked = cbEnableAutoSwitch.Checked;
             foreach(var configuration in ConfigurationProvider.CurrentInstance.Configuration.Configurations)
             {
                 AddItemToList(configuration);
@@ -163,12 +164,24 @@ namespace AutoAudio
             }
         }
 
+        private bool _isSettingEnabled;
         private void cbEnableAutoSwitch_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_isInitializing)
+            if (!_isSettingEnabled && !_isInitializing)
             {
-                ConfigurationProvider.CurrentInstance.Configuration.Enabled = cbEnableAutoSwitch.Checked;
+                ConfigurationProvider.CurrentInstance.Configuration.Enabled = !ConfigurationProvider.CurrentInstance.Configuration.Enabled;
                 ConfigurationProvider.CurrentInstance.Save();
+
+                _isSettingEnabled = true;
+                try
+                {
+                    cbEnableAutoSwitch.Checked = ConfigurationProvider.CurrentInstance.Configuration.Enabled;
+                    tsmiEnable.Checked = ConfigurationProvider.CurrentInstance.Configuration.Enabled;                    
+                }
+                finally
+                {
+                    _isSettingEnabled = false;
+                }
 
                 ReconfigureListeners();
             }
@@ -207,6 +220,15 @@ namespace AutoAudio
             _exiting = true;
 
             Application.Exit();
+        }
+
+        private void tsmiEnable_Click(object sender, EventArgs e)
+        {
+            var item = sender as ToolStripMenuItem;
+            if (item != null)
+            {
+                item.Checked = !item.Checked;
+            }
         }
     }
 }
