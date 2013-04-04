@@ -5,8 +5,7 @@ using System.Runtime.Serialization;
 namespace AutoAudio.Configuration
 {
     public class ConfigurationProvider
-    {
-        private const string ConfigurationFile = "AutoSwitchConfigurations.xml";
+    {        
         private static readonly ConfigurationProvider Instance = new ConfigurationProvider();
 
         public AutoSwitchConfigurations Configuration { get; private set; }
@@ -42,6 +41,22 @@ namespace AutoAudio.Configuration
                     Console.WriteLine("Load failed: {0}", ex);
                     Configuration = new AutoSwitchConfigurations();
                 }
+            }
+        }
+
+        public string ConfigurationFile
+        {
+            get
+            {
+                var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var path = Path.Combine(appData, "AutoAudio");
+                var configFile = Path.Combine(path, "AutoSwitchConfigurations.xml");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                return configFile;
             }
         }
 
