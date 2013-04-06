@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoAudio.Interfaces;
+using NLog;
 
 namespace AutoAudio.Impl
 {
     class PlaybackDeviceProvider : IPlaybackDeviceProvider
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public IList<PlaybackDevice> GetPlaybackDevices()
         {
             var devices = SoundConfig.ListDevices();
@@ -27,7 +30,7 @@ namespace AutoAudio.Impl
         public void SetPlaybackDevice(int playbackDeviceId)
         {
             var deviceName = GetPlaybackDeviceName(playbackDeviceId);
-            Console.WriteLine("Settings playback device: " + deviceName);
+            Logger.Info("Setting playback device '{0}':{1}", deviceName, playbackDeviceId); 
             SoundConfig.SetDefaultDevice(playbackDeviceId);
         }
     }

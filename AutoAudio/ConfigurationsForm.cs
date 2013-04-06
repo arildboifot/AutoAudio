@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using AutoAudio.Configuration;
 using AutoAudio.Impl;
@@ -151,7 +152,8 @@ namespace AutoAudio
 
         private void AddDevices(ContextMenuStrip menu, AutoSwitchConfiguration configuration)
         {
-            foreach(var config in configuration.DeviceConfigurations)
+            var devices = configuration.DeviceConfigurations.GroupBy(x => x.PlaybackDeviceId).Select(x => x.First());
+            foreach(var config in devices)
             {
                 var deviceId = config.PlaybackDeviceId;
                 var deviceName = _playbackDeviceProvider.GetPlaybackDeviceName(deviceId);

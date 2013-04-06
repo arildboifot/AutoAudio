@@ -1,17 +1,22 @@
 using System;
 using System.Management;
 using AutoAudio.Interfaces;
+using NLog;
 
 namespace AutoAudio.Impl
 {
     public class ProcessEvents : IProcessEvents, IDisposable
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // The dot in the scope means use the current machine
         private const string Scope = @"\\.\root\CIMV2";
 
         private readonly IPlaybackDeviceProvider _playbackDeviceProvider;
         private int _switchToPlaybackDevice;
+        private string _switchToPlaybackDeviceName;
         private int _defaultPlaybackDevice;
+        private string _defaultPlaybackDeviceName;
         private ManagementEventWatcher _startWatcher;
         private ManagementEventWatcher _endWatcher;
 
@@ -26,6 +31,9 @@ namespace AutoAudio.Impl
         {
             _switchToPlaybackDevice = switchToPlaybackDevice;
             _defaultPlaybackDevice = defaultPlaybackDevice;
+
+            _switchToPlaybackDeviceName = _playbackDeviceProvider.GetPlaybackDeviceName(_switchToPlaybackDevice);
+            _defaultPlaybackDeviceName = _playbackDeviceProvider.GetPlaybackDeviceName(_defaultPlaybackDevice);
 
             _startWatcher = WatchForProcessStart(processName);
             _endWatcher = WatchForProcessEnd(processName);
@@ -81,7 +89,7 @@ namespace AutoAudio.Impl
         {
             var targetInstance = (ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value;
             string processName = targetInstance.Properties["Name"].Value.ToString();
-            Console.WriteLine(String.Format("{0} process started", processName));
+            Logger.Info("Process '{0}' started, switching to '{1}':{2} ", processName, _switchToPlaybackDeviceName, _switchToPlaybackDevice);
 
             _hasStarted = true;
             _playbackDeviceProvider.SetPlaybackDevice(_switchToPlaybackDevice);
@@ -94,6 +102,7 @@ namespace AutoAudio.Impl
                 var targetInstance = (ManagementBaseObject)e.NewEvent.Properties["TargetInstance"].Value;
                 string processName = targetInstance.Properties["Name"].Value.ToString();
                 Console.WriteLine(String.Format("{0} process ended", processName));
+                Logger.Info("Process '{0}' ended, switching to '{1}':{2}", processName, _defaultPlaybackDeviceName, _switchToPlaybackDevice);
 
                 _playbackDeviceProvider.SetPlaybackDevice(_defaultPlaybackDevice);
                 _hasStarted = false;
