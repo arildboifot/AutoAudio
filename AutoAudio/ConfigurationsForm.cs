@@ -187,6 +187,16 @@ namespace AutoAudio
             }
         }
 
+        private void tsmiRunOnStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_isInitializing)
+            {
+                ConfigurationProvider.CurrentInstance.Configuration.RunOnStartupEnabled = !ConfigurationProvider.CurrentInstance.Configuration.RunOnStartupEnabled;
+                ConfigurationProvider.CurrentInstance.SetStartup();
+                ConfigurationProvider.CurrentInstance.Save();
+            }
+        }
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CloseForm();
@@ -220,15 +230,6 @@ namespace AutoAudio
             _exiting = true;
 
             Application.Exit();
-        }
-
-        private void tsmiEnable_Click(object sender, EventArgs e)
-        {
-            var item = sender as ToolStripMenuItem;
-            if (item != null)
-            {
-                item.Checked = !item.Checked;
-            }
         }
     }
 }

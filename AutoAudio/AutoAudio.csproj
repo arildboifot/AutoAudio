@@ -101,6 +101,7 @@
     <Compile Include="Configuration\AutoSwitchConfiguration.cs" />
     <Compile Include="Configuration\AutoSwitchConfigurations.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
+    <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Impl\PlaybackDevice.cs" />
     <Compile Include="Impl\PlaybackDeviceProvider.cs" />
     <Compile Include="Impl\ProcessEvents.cs" />

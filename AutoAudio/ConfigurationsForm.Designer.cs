@@ -32,6 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationsForm));
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiEnable = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiRunOnStartup = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,8 +45,6 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnDelete = new System.Windows.Forms.Button();
             this.cbEnableAutoSwitch = new System.Windows.Forms.CheckBox();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmiEnable = new System.Windows.Forms.ToolStripMenuItem();
             this.autoSwitchConfigurationsBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.contextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.autoSwitchConfigurationsBindingSource)).BeginInit();
@@ -62,29 +63,51 @@
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiEnable,
+            this.tsmiRunOnStartup,
             this.toolStripMenuItem2,
             this.openToolStripMenuItem,
             this.toolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(110, 82);
+            this.contextMenuStrip.Size = new System.Drawing.Size(153, 126);
+            // 
+            // tsmiEnable
+            // 
+            this.tsmiEnable.CheckOnClick = true;
+            this.tsmiEnable.Name = "tsmiEnable";
+            this.tsmiEnable.Size = new System.Drawing.Size(152, 22);
+            this.tsmiEnable.Text = "Enable";
+            this.tsmiEnable.CheckedChanged += new System.EventHandler(this.cbEnableAutoSwitch_CheckedChanged);
+            // 
+            // tsmiRunOnStartup
+            // 
+            this.tsmiRunOnStartup.CheckOnClick = true;
+            this.tsmiRunOnStartup.Name = "tsmiRunOnStartup";
+            this.tsmiRunOnStartup.Size = new System.Drawing.Size(152, 22);
+            this.tsmiRunOnStartup.Text = "Run on startup";
+            this.tsmiRunOnStartup.CheckedChanged += new System.EventHandler(this.tsmiRunOnStartup_CheckedChanged);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(106, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -112,9 +135,9 @@
             // lvConfigurations
             // 
             this.lvConfigurations.Activation = System.Windows.Forms.ItemActivation.OneClick;
-            this.lvConfigurations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvConfigurations.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvConfigurations.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
@@ -160,19 +183,6 @@
             this.cbEnableAutoSwitch.UseVisualStyleBackColor = true;
             this.cbEnableAutoSwitch.CheckedChanged += new System.EventHandler(this.cbEnableAutoSwitch_CheckedChanged);
             // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(106, 6);
-            // 
-            // tsmiEnable
-            // 
-            this.tsmiEnable.Name = "tsmiEnable";
-            this.tsmiEnable.Size = new System.Drawing.Size(109, 22);
-            this.tsmiEnable.Text = "Enable";
-            this.tsmiEnable.CheckedChanged += new System.EventHandler(this.cbEnableAutoSwitch_CheckedChanged);
-            this.tsmiEnable.Click += new System.EventHandler(this.tsmiEnable_Click);
-            // 
             // autoSwitchConfigurationsBindingSource
             // 
             this.autoSwitchConfigurationsBindingSource.DataSource = typeof(AutoAudio.Configuration.AutoSwitchConfigurations);
@@ -216,6 +226,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiEnable;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.BindingSource autoSwitchConfigurationsBindingSource;
+        private System.Windows.Forms.ToolStripMenuItem tsmiRunOnStartup;
     }
 }
 

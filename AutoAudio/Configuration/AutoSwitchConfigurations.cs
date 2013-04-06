@@ -1,12 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Win32;
 
 namespace AutoAudio.Configuration
 {
     public class AutoSwitchConfigurations
     {
         public bool Enabled { get; set; }
+        public bool RunOnStartupEnabled { get; set; }
         public List<AutoSwitchConfiguration> Configurations { get; set; }
+        
 
         public AutoSwitchConfigurations()
         {

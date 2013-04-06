@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace AutoAudio.Configuration
 {
@@ -66,6 +68,25 @@ namespace AutoAudio.Configuration
             {
                 var serializer = CreateSerializer();
                 serializer.WriteObject(fs, Configuration);
+            }
+        }
+
+        public void SetStartup()
+        {
+            SetStartup(Configuration.RunOnStartupEnabled, Constants.ApplicationName, Application.ExecutablePath);
+        }
+
+        private static void SetStartup(bool enable, string applicationName, string path)
+        {
+            using (var key = Registry.CurrentUser.OpenSubKey(Constants.StartupRegistryKey, true))
+            {
+                if (key != null)
+                {
+                    if (enable)
+                        key.SetValue(applicationName, path);
+                    else
+                        key.DeleteValue(applicationName, false);
+                }
             }
         }
 
