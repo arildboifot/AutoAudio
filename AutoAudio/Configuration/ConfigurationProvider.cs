@@ -10,11 +10,13 @@ namespace AutoAudio.Configuration
     {        
         private static readonly ConfigurationProvider Instance = new ConfigurationProvider();
 
-        public AutoSwitchConfigurations Configuration { get; private set; }
+        public AutoSwitchConfiguration Configuration { get; private set; }
 
         public ConfigurationProvider()
         {
             Load();
+            
+            Configuration.IsRunOnStartupEnabled += (sender, args) => SetStartup();
         }
 
         public static ConfigurationProvider CurrentInstance
@@ -26,7 +28,7 @@ namespace AutoAudio.Configuration
         {
             if (!File.Exists(ConfigurationFile))
             {
-                Configuration = new AutoSwitchConfigurations();
+                Configuration = new AutoSwitchConfiguration();
             }
             else
             {
@@ -35,13 +37,13 @@ namespace AutoAudio.Configuration
                     using (var fs = new FileStream(ConfigurationFile, FileMode.Open, FileAccess.Read))
                     {
                         var serializer = CreateSerializer();
-                        Configuration = (AutoSwitchConfigurations) serializer.ReadObject(fs);
+                        Configuration = (AutoSwitchConfiguration) serializer.ReadObject(fs);
                     }
                 } 
                 catch(Exception ex)
                 {
                     Console.WriteLine("Load failed: {0}", ex);
-                    Configuration = new AutoSwitchConfigurations();
+                    Configuration = new AutoSwitchConfiguration();
                 }
             }
         }
@@ -64,7 +66,7 @@ namespace AutoAudio.Configuration
 
         public void Save()
         {
-            using(var fs = new FileStream(ConfigurationFile, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            using(var fs = new FileStream(ConfigurationFile, FileMode.Create, FileAccess.ReadWrite))
             {
                 var serializer = CreateSerializer();
                 serializer.WriteObject(fs, Configuration);
@@ -92,7 +94,7 @@ namespace AutoAudio.Configuration
 
         private DataContractSerializer CreateSerializer()
         {
-            return new DataContractSerializer(typeof(AutoSwitchConfigurations));
+            return new DataContractSerializer(typeof(AutoSwitchConfiguration));
         }
     }
 }

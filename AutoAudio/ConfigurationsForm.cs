@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using AutoAudio.Configuration;
 using AutoAudio.Impl;
@@ -10,10 +9,11 @@ namespace AutoAudio
     public partial class ConfigurationsForm : Form
     {
         private bool _exiting;
-        private bool _isInitializing;
         private readonly IPlaybackDeviceProvider _playbackDeviceProvider;
-        private readonly IDictionary<Guid, IProcessEvents> _processEvents = new Dictionary<Guid, IProcessEvents>();
+        private readonly ProcessEventContainer _processEventContainer;
         private readonly int _defaultPlaybackDevice;
+
+        private readonly AutoSwitchConfiguration _configuration = ConfigurationProvider.CurrentInstance.Configuration;
 
         public ConfigurationsForm()
         {
@@ -21,81 +21,23 @@ namespace AutoAudio
 
             _playbackDeviceProvider = new PlaybackDeviceProvider();
             _defaultPlaybackDevice = _playbackDeviceProvider.GetDefaultDeviceId();
+            _processEventContainer = new ProcessEventContainer(_playbackDeviceProvider, _configuration); 
 
             Initialize();
         }
 
         private void Initialize()
         {
-            _isInitializing = true;
-            cbEnableAutoSwitch.Checked = ConfigurationProvider.CurrentInstance.Configuration.Enabled;
-            tsmiEnable.Checked = cbEnableAutoSwitch.Checked;
-            foreach(var configuration in ConfigurationProvider.CurrentInstance.Configuration.Configurations)
+            autoSwitchConfigurationsBindingSource.DataSource = _configuration;
+
+            foreach (var configuration in _configuration.DeviceConfigurations)
             {
                 AddItemToList(configuration);
             }
 
-            ReconfigureListeners();
-            //UpdateContextMenuStrip();
-            _isInitializing = false;
-        }
+            _processEventContainer.Initialize();            
+        }      
 
-        //private void UpdateContextMenuStrip()
-        //{
-        //    for(int i = contextMenuStrip.Items.Count - 3; i > 0; i--)
-        //    {
-        //        contextMenuStrip.Items.RemoveAt(i);
-        //    }
-
-        //    var configurations = ConfigurationProvider.CurrentInstance.Configuration.Configurations;
-        //    for(int i = 0; i < configurations.Count; i++)
-        //    {
-        //        var deviceId = configurations[i].PlaybackDeviceId;
-        //        var deviceName = _playbackDeviceProvider.GetPlaybackDeviceName(configurations[i].PlaybackDeviceId);
-                
-        //        var item = new ToolStripMenuItem(deviceName);
-        //        item.Tag = deviceId;
-        //        item.Click += (sender, e) => _playbackDeviceProvider.SetPlaybackDevice(deviceId);
-        //        item.Checked = deviceId == _defaultPlaybackDevice;
-        //        contextMenuStrip.Items.Insert(i, item);
-        //    }
-
-        //    if (configurations.Count > 0)
-        //    {
-        //        contextMenuStrip.Items.Insert(configurations.Count, new ToolStripSeparator());
-        //    }
-        //}
-
-        private void ReconfigureListeners()
-        {
-            ResetAllListeners();
-
-            if (cbEnableAutoSwitch.Checked)
-            {
-                foreach (var configuration in ConfigurationProvider.CurrentInstance.Configuration.Configurations)
-                {
-                    AddListener(configuration);
-                }
-            }
-        }
-
-        private void ResetAllListeners()
-        {
-            foreach (var listener in _processEvents)
-            {
-                listener.Value.Dispose();
-            }
-
-            _processEvents.Clear();
-        }
-
-        private void AddListener(AutoSwitchConfiguration configuration)
-        {
-            var listener = new ProcessEvents(_playbackDeviceProvider);
-            listener.RegisterSwitchForProcess(configuration.Process, configuration.PlaybackDeviceId, _defaultPlaybackDevice);
-
-            _processEvents.Add(configuration.Id, listener);
-        }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
@@ -103,7 +45,7 @@ namespace AutoAudio
             {
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    var configuration = new AutoSwitchConfiguration();
+                    var configuration = new DeviceConfiguration();
                     configuration.PlaybackDeviceId = dlg.SelectedPlaybackDevice.Id;
                     configuration.Process = dlg.SelectedProcess;
 
@@ -113,7 +55,7 @@ namespace AutoAudio
             }
         }
 
-        private void AddItemToList(AutoSwitchConfiguration configuration)
+        private void AddItemToList(DeviceConfiguration configuration)
         {
             var playbackDeviceName = _playbackDeviceProvider.GetPlaybackDeviceName(configuration.PlaybackDeviceId);
             var listItem = lvConfigurations.Items.Add(configuration.Process);
@@ -130,29 +72,23 @@ namespace AutoAudio
             if (result == DialogResult.Yes)
             {
                 var selectedItem = lvConfigurations.SelectedItems[0];
-                var configuration = (AutoSwitchConfiguration) selectedItem.Tag;
+                var configuration = (DeviceConfiguration) selectedItem.Tag;
 
                 lvConfigurations.Items.Remove(selectedItem);
                 RemoveConfiguration(configuration);
             }
         }
 
-        private void AddConfiguration(AutoSwitchConfiguration configuration)
+        private void AddConfiguration(DeviceConfiguration configuration)
         {
-            ConfigurationProvider.CurrentInstance.Configuration.Add(configuration);
-            ConfigurationProvider.CurrentInstance.Save();
-
-            ReconfigureListeners();
-            //UpdateContextMenuStrip();
+            _configuration.Add(configuration);
+            SaveConfiguration();
         }
 
-        private void RemoveConfiguration(AutoSwitchConfiguration configuration)
+        private void RemoveConfiguration(DeviceConfiguration configuration)
         {
-            ConfigurationProvider.CurrentInstance.Configuration.Remove(configuration);
-            ConfigurationProvider.CurrentInstance.Save();
-
-            ReconfigureListeners();
-            //UpdateContextMenuStrip();
+            _configuration.Remove(configuration);
+            SaveConfiguration();
         }
 
         private void ConfigurationsForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -162,52 +98,9 @@ namespace AutoAudio
                 e.Cancel = true;
                 Hide();
             }
-        }
-
-        private bool _isSettingEnabled;
-        private void cbEnableAutoSwitch_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_isSettingEnabled && !_isInitializing)
-            {
-                ConfigurationProvider.CurrentInstance.Configuration.Enabled = !ConfigurationProvider.CurrentInstance.Configuration.Enabled;
-                ConfigurationProvider.CurrentInstance.Save();
-
-                _isSettingEnabled = true;
-                try
-                {
-                    cbEnableAutoSwitch.Checked = ConfigurationProvider.CurrentInstance.Configuration.Enabled;
-                    tsmiEnable.Checked = ConfigurationProvider.CurrentInstance.Configuration.Enabled;                    
-                }
-                finally
-                {
-                    _isSettingEnabled = false;
-                }
-
-                ReconfigureListeners();
-            }
-        }
-
-        private void tsmiRunOnStartup_CheckedChanged(object sender, EventArgs e)
-        {
-            if (!_isInitializing)
-            {
-                ConfigurationProvider.CurrentInstance.Configuration.RunOnStartupEnabled = !ConfigurationProvider.CurrentInstance.Configuration.RunOnStartupEnabled;
-                ConfigurationProvider.CurrentInstance.SetStartup();
-                ConfigurationProvider.CurrentInstance.Save();
-            }
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CloseForm();
-        }
+        }      
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
-        {
-            OpenForm();
-        }
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenForm();
         }
@@ -225,11 +118,62 @@ namespace AutoAudio
 
         private void CloseForm()
         {
-            ResetAllListeners();
+            _processEventContainer.Dispose();
             _playbackDeviceProvider.SetPlaybackDevice(_defaultPlaybackDevice);
             _exiting = true;
 
             Application.Exit();
+        }
+
+        private void contextMenuStrip_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {            
+            var menu = sender as ContextMenuStrip;
+            if (menu != null)
+            {                
+                menu.Items.Clear();
+                menu.Items.Add(new ToolStripMenuItem("&Open", null, (o, args) => OpenForm()));
+                menu.Items.Add(new ToolStripSeparator());
+                menu.Items.Add(new ToolStripMenuItem("&Enabled", null, (o, args) =>
+                    {
+                        _configuration.IsEnabled = !_configuration.IsEnabled;
+                        SaveConfiguration();
+                    }) { Checked = _configuration.IsEnabled });
+                menu.Items.Add(new ToolStripMenuItem("&Run on startup", null, (o, args) =>
+                    {
+                        _configuration.RunOnStartupEnabled = !_configuration.RunOnStartupEnabled;
+                        SaveConfiguration();
+                    }) { Checked = _configuration.RunOnStartupEnabled });
+                menu.Items.Add(new ToolStripSeparator());
+                AddDevices(menu, _configuration);
+                menu.Items.Add(new ToolStripMenuItem("E&xit", null, (o, args) => CloseForm()));
+            }
+        }
+
+        private void AddDevices(ContextMenuStrip menu, AutoSwitchConfiguration configuration)
+        {
+            foreach(var config in configuration.DeviceConfigurations)
+            {
+                var deviceId = config.PlaybackDeviceId;
+                var deviceName = _playbackDeviceProvider.GetPlaybackDeviceName(deviceId);
+
+                var item = new ToolStripMenuItem(deviceName);
+                item.Tag = deviceId;
+                item.Click += (sender, e) => _playbackDeviceProvider.SetPlaybackDevice(deviceId);
+                item.Checked = deviceId == _defaultPlaybackDevice;
+                menu.Items.Add(item);
+            }
+
+            if (configuration.DeviceConfigurations.Count > 0)
+            {
+                menu.Items.Add(new ToolStripSeparator());
+            }
+        }
+
+        private void SaveConfiguration()
+        {
+            ConfigurationProvider.CurrentInstance.Save();
+            autoSwitchConfigurationsBindingSource.DataSource = _configuration;
+            autoSwitchConfigurationsBindingSource.ResetBindings(false);            
         }
     }
 }

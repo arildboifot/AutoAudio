@@ -98,17 +98,19 @@
     <Compile Include="ConfigurationsForm.Designer.cs">
       <DependentUpon>ConfigurationsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Configuration\DeviceConfiguration.cs" />
     <Compile Include="Configuration\AutoSwitchConfiguration.cs" />
-    <Compile Include="Configuration\AutoSwitchConfigurations.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Configuration\Constants.cs" />
     <Compile Include="Impl\PlaybackDevice.cs" />
     <Compile Include="Impl\PlaybackDeviceProvider.cs" />
+    <Compile Include="Impl\ProcessEventContainer.cs" />
     <Compile Include="Impl\ProcessEvents.cs" />
     <Compile Include="Impl\ProcessHelper.cs" />
     <Compile Include="Impl\SoundConfig.cs" />
     <Compile Include="Impl\ProcessInfo.cs" />
     <Compile Include="Interfaces\IPlaybackDeviceProvider.cs" />
+    <Compile Include="Interfaces\IProcessEventContainer.cs" />
     <Compile Include="Interfaces\IProcessEvents.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -130,6 +132,7 @@
     </Compile>
     <None Include="app.config" />
     <None Include="AutoAudioUi_TemporaryKey.pfx" />
+    <None Include="Properties\DataSources\AutoAudio.Configuration.AutoSwitchConfigurations.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
