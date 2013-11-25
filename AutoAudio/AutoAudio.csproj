@@ -31,6 +31,8 @@
     <ProductName>Auto audio switcher</ProductName>
     <PublisherName>Cotton Cactus</PublisherName>
     <SuiteName>cottoncactus.no</SuiteName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
@@ -62,10 +64,10 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>3FF5E71E5FC2EF6FBD1DD12BE61883E9BF794FE0</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>1330B81611AD03FC7FAD1EC7DC39023BF7F87B72</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>AutoAudioUi_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>AutoAudio_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -137,10 +139,10 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="AutoAudioUi_TemporaryKey.pfx" />
     <Content Include="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="AutoAudio_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\AutoAudio.Configuration.AutoSwitchConfigurations.datasource" />
   </ItemGroup>
