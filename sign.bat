@@ -5,6 +5,8 @@ set pfx=%2
 set pwd=%3
 set v=%4
 
+set path=%path%;C:\Program Files (x86)\Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools;C:\Program Files (x86)\Windows Kits\8.0\bin\x86
+
 set bin=%~dp0AutoAudio\bin\%env%
 set rootDeploy=%~dp0deploy
 set deploy=%rootDeploy%\%v%
