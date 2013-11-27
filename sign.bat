@@ -13,7 +13,9 @@ set deploy=%rootDeploy%\%v%
 
 md %deploy%
 xcopy %bin%\*.* %deploy% /S /Y
+xcopy tools\bootstrapper\setup.exe %rootDeploy%
 
+signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%rootDeploy%\setup.exe"
 for /R "%deploy%" %%i in (*exe*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
 for /R "%deploy%" %%i in (*dll*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
 
