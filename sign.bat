@@ -13,11 +13,14 @@ set deploy=%rootDeploy%\%v%
 
 md %deploy%
 xcopy %bin%\*.* %deploy% /S /Y
-xcopy tools\bootstrapper\setup.exe %rootDeploy%
+xcopy tools\bootstrapper\setup.exe %rootDeploy% /Y
+
+for /R "%deploy%" %%i in (*application*) do del "%%i"
+for /R "%deploy%" %%i in (*manifest*) do del "%%i"
 
 signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%rootDeploy%\setup.exe"
-rem for /R "%deploy%" %%i in (*exe*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
-rem for /R "%deploy%" %%i in (*dll*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
+for /R "%deploy%" %%i in (*exe*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
+for /R "%deploy%" %%i in (*dll*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
 
 mage -New Application -Processor x86 -ToFile %deploy%\AutoAudio.exe.manifest -Name "AutoAudio" -Version %v% -FromDirectory %deploy%
 mage -sign %deploy%\AutoAudio.exe.manifest -CertFile %pfx% -Password %pwd%
