@@ -12,11 +12,10 @@ set rootDeploy=%~dp0deploy
 set deploy=%rootDeploy%\%v%
 
 md %deploy%
-xcopy %bin%\*.* %deploy% /S /Y
-xcopy tools\bootstrapper\setup.exe %rootDeploy% /Y
 
-for /R "%deploy%" %%i in (*application*) do del "%%i"
-for /R "%deploy%" %%i in (*manifest*) do del "%%i"
+xcopy %bin%\AutoAudio.exe %deploy% /S /Y
+xcopy %bin%\lib\SoundSwitch.AudioInterface.exe %deploy%\lib\ /S /Y
+xcopy tools\bootstrapper\setup.exe %rootDeploy% /Y
 
 signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%rootDeploy%\setup.exe"
 for /R "%deploy%" %%i in (*exe*) do signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%%i"
