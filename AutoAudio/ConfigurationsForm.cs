@@ -10,6 +10,7 @@ namespace AutoAudio
     public partial class ConfigurationsForm : Form
     {
         private bool _exiting;
+        private bool _allowVisible = false;
         private readonly IPlaybackDeviceProvider _playbackDeviceProvider;
         private readonly ProcessEventContainer _processEventContainer;
         private readonly int _defaultPlaybackDevice;
@@ -25,6 +26,17 @@ namespace AutoAudio
             _processEventContainer = new ProcessEventContainer(_playbackDeviceProvider, _configuration); 
 
             Initialize();
+        }
+
+        protected override void SetVisibleCore(bool value)
+        {
+            if (!_allowVisible)
+            {
+                value = false;
+                if (!IsHandleCreated)
+                    CreateHandle();
+            }
+            base.SetVisibleCore(value);
         }
 
         private void Initialize()
@@ -96,6 +108,7 @@ namespace AutoAudio
         {
             if (!_exiting)
             {
+                _allowVisible = false;
                 e.Cancel = true;
                 Hide();
             }
@@ -113,12 +126,14 @@ namespace AutoAudio
                 WindowState = FormWindowState.Normal;
             }
 
+            _allowVisible = true;
             Show();
             Activate();            
         }
 
         private void CloseForm()
         {
+            _allowVisible = false;
             _processEventContainer.Dispose();
             _playbackDeviceProvider.SetPlaybackDevice(_defaultPlaybackDevice);
             _exiting = true;

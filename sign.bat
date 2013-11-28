@@ -14,7 +14,12 @@ set deploy=%rootDeploy%\%v%
 md %deploy%
 
 xcopy %bin%\AutoAudio.exe %deploy% /S /Y
+xcopy %bin%\NLog.dll %deploy% /S /Y
+xcopy %bin%\NLog.config %deploy% /S /Y
+xcopy %bin%\AutoAudio.exe.config %deploy% /S /Y
+
 xcopy %bin%\lib\SoundSwitch.AudioInterface.exe %deploy%\lib\ /S /Y
+
 xcopy tools\bootstrapper\setup.exe %rootDeploy% /Y
 
 signtool sign /v /d AutoAudio /f %pfx% /p %pwd% /tr "http://www.startssl.com/timestamp" "%rootDeploy%\setup.exe"
