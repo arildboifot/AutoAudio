@@ -34,7 +34,9 @@ namespace AutoAudio
             {
                 value = false;
                 if (!IsHandleCreated)
+                {
                     CreateHandle();
+                }
             }
             base.SetVisibleCore(value);
         }
