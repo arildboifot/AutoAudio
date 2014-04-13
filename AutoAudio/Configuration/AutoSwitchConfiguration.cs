@@ -20,6 +20,7 @@ namespace AutoAudio.Configuration
         private bool _runOnStartupEnabled;
 
         public List<DeviceConfiguration> DeviceConfigurations { get; set; }
+        public List<FavoriteDeviceConfiguration> FavoriteDevices { get; set; }
 
         public event EventHandler<EnabledEventArgs> IsEnabledChanged;
         public event EventHandler<EnabledEventArgs> IsRunOnStartupEnabled;
@@ -28,6 +29,7 @@ namespace AutoAudio.Configuration
         public AutoSwitchConfiguration()
         {
             DeviceConfigurations = new List<DeviceConfiguration>();
+            FavoriteDevices = new List<FavoriteDeviceConfiguration>();
         }
 
         public bool IsEnabled

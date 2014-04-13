@@ -2,6 +2,11 @@ using System;
 
 namespace AutoAudio.Configuration
 {
+    public class FavoriteDeviceConfiguration
+    {
+        public int PlaybackDeviceId { get; set; }
+    }            
+
     public class DeviceConfiguration
     {
         public Guid Id { get; private set; }

@@ -50,6 +50,17 @@ namespace AutoAudio
                 AddItemToList(configuration);
             }
 
+
+            var playbackDevices = _playbackDeviceProvider.GetPlaybackDevices();
+            foreach (var device in playbackDevices)
+            {
+                var idx = clbFavorites.Items.Add(device);
+                if (_configuration.FavoriteDevices.Any(x => x.PlaybackDeviceId == device.Id))
+                {
+                    clbFavorites.SetItemChecked(idx, true);
+                }
+            }
+
             _processEventContainer.Initialize();            
         }      
 
@@ -169,18 +180,32 @@ namespace AutoAudio
 
         private void AddDevices(ContextMenuStrip menu, AutoSwitchConfiguration configuration)
         {
-            var devices = configuration.DeviceConfigurations.GroupBy(x => x.PlaybackDeviceId).Select(x => x.First());
-            foreach(var config in devices)
+            var deviceIds = configuration.DeviceConfigurations
+                            .GroupBy(x => x.PlaybackDeviceId)
+                            .Select(x => x.First())
+                            .Select(x => x.PlaybackDeviceId)
+                            .ToList();
+
+            deviceIds.AddRange(configuration.FavoriteDevices.Where(x => !deviceIds.Contains(x.PlaybackDeviceId)).Select(x => x.PlaybackDeviceId));
+            
+            foreach (var deviceId in deviceIds)
             {
-                var deviceId = config.PlaybackDeviceId;
+                //var deviceId = config.PlaybackDeviceId;
                 var deviceName = _playbackDeviceProvider.GetPlaybackDeviceName(deviceId);
 
                 var item = new ToolStripMenuItem(deviceName);
                 item.Tag = deviceId;
-                item.Click += (sender, e) => _playbackDeviceProvider.SetPlaybackDevice(deviceId);
-                item.Checked = deviceId == _defaultPlaybackDevice;
+                Action<int> setCheckedDevice = (id) => item.Checked = id == _playbackDeviceProvider.GetDefaultDeviceId();
+                item.Click += (sender, e) =>
+                {
+                    _playbackDeviceProvider.SetPlaybackDevice(deviceId);
+                    setCheckedDevice(deviceId);                                    
+                };
+                setCheckedDevice(deviceId);                
                 menu.Items.Add(item);
             }
+
+            
 
             if (configuration.DeviceConfigurations.Count > 0)
             {
@@ -193,6 +218,29 @@ namespace AutoAudio
             ConfigurationProvider.CurrentInstance.Save();
             autoSwitchConfigurationsBindingSource.DataSource = _configuration;
             autoSwitchConfigurationsBindingSource.ResetBindings(false);            
+        }
+
+        private void clbFavorites_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var list = (sender as CheckedListBox);
+            if (list != null)
+            {
+                var item = (PlaybackDevice)list.Items[e.Index];
+                var configuredItem = _configuration.FavoriteDevices.SingleOrDefault(x => x.PlaybackDeviceId == item.Id);
+                if (e.NewValue == CheckState.Checked)
+                {
+                    if (configuredItem == null)
+                    {
+                        _configuration.FavoriteDevices.Add(new FavoriteDeviceConfiguration {PlaybackDeviceId = item.Id});
+                    }
+                }
+                else
+                {
+                    _configuration.FavoriteDevices.Remove(configuredItem);
+                }
+
+                SaveConfiguration();
+            }                
         }
     }
 }
